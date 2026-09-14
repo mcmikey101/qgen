@@ -90,7 +90,7 @@ const Home: React.FC = () => {
   };
 
   const handleCreateDeck = () => {
-    // Здесь будет логика создания колоды и конвертации файла
+    // todo конвертация файла
     handleCloseDialog();
   };
 
