@@ -253,6 +253,12 @@ chrome-user-data
 /.worktrees
 .claude/*.local.*
 .claude/worktrees
+.env
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.env.example
 
 packages/react-devtools-core/dist
 packages/react-devtools-extensions/chrome/build
