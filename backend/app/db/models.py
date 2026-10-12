@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text
+from sqlalchemy import Boolean, Column, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from app.db.database import Base
@@ -28,6 +28,7 @@ class Deck(Base):
 
     owner = relationship("User", back_populates="decks")
     cards = relationship("Card", back_populates="deck", cascade="all, delete-orphan")
+    tag_records = relationship("DeckTag", back_populates="deck", cascade="all, delete-orphan")
 
     @property
     def card_count(self):
@@ -36,6 +37,21 @@ class Deck(Base):
     @property
     def owner_username(self):
         return self.owner.username
+
+    @property
+    def tags(self):
+        return [tag.value for tag in self.tag_records]
+
+
+class DeckTag(Base):
+    __tablename__ = "deck_tags"
+    __table_args__ = (UniqueConstraint("deck_id", "value", name="uq_deck_tag_value"),)
+
+    id = Column(Integer, primary_key=True)
+    deck_id = Column(Integer, ForeignKey("decks.id", ondelete="CASCADE"), nullable=False)
+    value = Column(String(50), nullable=False)
+
+    deck = relationship("Deck", back_populates="tag_records")
 
 
 class Card(Base):

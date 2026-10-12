@@ -1,9 +1,11 @@
-from fastapi import APIRouter, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, Path, Query
 from sqlalchemy.orm import Session
 
-from app import schemas
+from app.routers import schemas
 from app.db.database import get_db
-from app.models import User
+from app.db.models import User
 from app.db.current_user import get_current_user
 from app.db import crud
 
@@ -17,8 +19,8 @@ def create_deck(data: schemas.DeckCreate, db: Session = Depends(get_db), user: U
 
 @router.get("", response_model=list[schemas.DeckOut])
 def list_decks(
-    skip: int = 0,
-    limit: int = 20,
+    skip: int = Query(default=0, ge=0),
+    limit: int = Query(default=20, ge=1, le=100),
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
 ):
@@ -26,13 +28,13 @@ def list_decks(
 
 
 @router.get("/{deck_id}", response_model=schemas.DeckOut)
-def get_deck(deck_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def get_deck(deck_id: Annotated[int, Path(gt=0)], db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     return crud.get_own_deck(db, deck_id, user)
 
 
 @router.patch("/{deck_id}", response_model=schemas.DeckOut)
 def update_deck(
-    deck_id: int,
+    deck_id: Annotated[int, Path(gt=0)],
     data: schemas.DeckUpdate,
     db: Session = Depends(get_db),
     user: User = Depends(get_current_user),
@@ -42,6 +44,6 @@ def update_deck(
 
 
 @router.delete("/{deck_id}", status_code=204)
-def delete_deck(deck_id: int, db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+def delete_deck(deck_id: Annotated[int, Path(gt=0)], db: Session = Depends(get_db), user: User = Depends(get_current_user)):
     deck = crud.get_own_deck(db, deck_id, user)
     crud.delete_deck(db, deck)

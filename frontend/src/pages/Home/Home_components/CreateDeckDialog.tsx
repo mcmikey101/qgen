@@ -14,7 +14,6 @@ import {
 import type { NewDeckValues } from './types';
 import { useCreateDeckForm } from './UseCreateDeckForm';
 import TagInput from './TagInput';
-import FileUploadButton from './FileUploadButton';
 
 interface CreateDeckDialogProps {
   open: boolean;
@@ -64,13 +63,6 @@ const CreateDeckDialog: React.FC<CreateDeckDialogProps> = ({
 
           <TagInput tags={values.tags} onChange={(tags) => setField('tags', tags)} />
 
-          <FileUploadButton
-            file={values.file}
-            onChange={(file) => setField('file', file)}
-            accept=".pdf,.md,.txt"
-            placeholder="Выбрать файл (pdf, md, txt)"
-          />
-
           <FormControlLabel
             control={
               <Switch
@@ -91,11 +83,9 @@ const CreateDeckDialog: React.FC<CreateDeckDialogProps> = ({
             label="Создать колоду в Anki"
           />
 
-          {!values.file && (
-            <Typography variant="caption" color="text.secondary">
-              Карточки будут сгенерированы автоматически из содержимого файла.
-            </Typography>
-          )}
+          <Typography variant="caption" color="text.secondary">
+            Карточки можно добавить позже вручную или загрузить файл внутри колоды.
+          </Typography>
         </Box>
       </DialogContent>
       <DialogActions>
@@ -103,7 +93,7 @@ const CreateDeckDialog: React.FC<CreateDeckDialogProps> = ({
         <Button
           variant="contained"
           onClick={handleCreate}
-          disabled={!values.name || !values.file}
+          disabled={!values.name.trim()}
         >
           Создать
         </Button>

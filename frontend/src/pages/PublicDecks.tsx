@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Box, TextField } from '@mui/material';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
-import './Pages.css';
+import '../css/Pages.css';
 
 const fakePublicDecks = [
   { id: 1, name: 'World History', tags: ['History', 'Geography'], likes: 120, dislikes: 4 },

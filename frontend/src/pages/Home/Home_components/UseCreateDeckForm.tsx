@@ -4,7 +4,6 @@ import type { NewDeckValues } from './types';
 const initialValues: NewDeckValues = {
   name: '',
   description: '',
-  file: null,
   isPublic: false,
   createInAnki: false,
   tags: [],

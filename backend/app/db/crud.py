@@ -1,8 +1,8 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
-from app import schemas
-from app.models import Card, Deck, User
+from app.routers import schemas
+from app.db.models import Card, Deck, DeckTag, User
 
 
 def get_own_deck(db: Session, deck_id: int, user: User) -> Deck:
@@ -28,6 +28,7 @@ def get_public_deck(db: Session, deck_id: int) -> Deck:
 
 def create_deck(db: Session, user: User, data: schemas.DeckCreate) -> Deck:
     deck = Deck(owner_id=user.id, title=data.title, description=data.description, is_public=data.is_public)
+    deck.tag_records = [DeckTag(value=tag) for tag in data.tags]
     db.add(deck)
     db.commit()
     db.refresh(deck)
@@ -46,9 +47,13 @@ def get_user_decks(db: Session, user: User, skip: int, limit: int) -> list[Deck]
 
 
 def update_deck(db: Session, deck: Deck, data: schemas.DeckUpdate) -> Deck:
-    for field, value in data.model_dump(exclude_unset=True).items():
+    updates = data.model_dump(exclude_unset=True)
+    tags = updates.pop("tags", None)
+    for field, value in updates.items():
         if value is not None:
             setattr(deck, field, value)
+    if tags is not None:
+        deck.tag_records = [DeckTag(value=tag) for tag in tags]
     db.commit()
     db.refresh(deck)
     return deck
@@ -59,15 +64,18 @@ def delete_deck(db: Session, deck: Deck) -> None:
     db.commit()
 
 
-def get_public_decks(db: Session, search: str | None, skip: int, limit: int) -> list[Deck]:
+def get_public_decks(db: Session, search: str | None, tag: str | None, skip: int, limit: int) -> list[Deck]:
     query = db.query(Deck).filter(Deck.is_public.is_(True))
     if search:
         query = query.filter(Deck.title.ilike(f"%{search}%"))
+    if tag:
+        query = query.filter(Deck.tag_records.any(DeckTag.value.ilike(tag)))
     return query.order_by(Deck.id.desc()).offset(skip).limit(limit).all()
 
 
 def fork_deck(db: Session, source: Deck, user: User) -> Deck:
     new_deck = Deck(owner_id=user.id, title=source.title, description=source.description, is_public=False)
+    new_deck.tag_records = [DeckTag(value=tag) for tag in source.tags]
     db.add(new_deck)
     db.flush()
 
@@ -78,8 +86,12 @@ def fork_deck(db: Session, source: Deck, user: User) -> Deck:
     return new_deck
 
 
-def get_deck_cards(db: Session, deck: Deck, skip: int, limit: int) -> list[Card]:
-    return db.query(Card).filter(Card.deck_id == deck.id).order_by(Card.id).offset(skip).limit(limit).all()
+def get_deck_cards(db: Session, deck: Deck, skip: int, limit: int, search: str | None = None) -> list[Card]:
+    query = db.query(Card).filter(Card.deck_id == deck.id)
+    if search:
+        pattern = f"%{search}%"
+        query = query.filter((Card.front.ilike(pattern)) | (Card.back.ilike(pattern)))
+    return query.order_by(Card.id).offset(skip).limit(limit).all()
 
 
 def create_card(db: Session, deck: Deck, data: schemas.CardCreate) -> Card:

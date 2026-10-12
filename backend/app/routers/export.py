@@ -3,9 +3,9 @@ import html
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app import schemas
+from app.routers import schemas
 from app.db.database import get_db
-from app.models import User
+from app.db.models import User
 from app.db.current_user import get_current_user
 from app.db import crud
 

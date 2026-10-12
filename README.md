@@ -39,17 +39,22 @@
 
 Инструменты: FastAPI, PostgreSQL, SQLAlchemy, pydantic
 
-Модель данных:
-User: id, email (unique), username, password_hash, created_at
-Deck: id, owner_id -> User (FK), title, description, is_public, created_at, updated_at
-Card: id, deck_id -> Deck (FK, cascade delete), front, back, position, source_text_id -> SourceText (FK, nullable, SET NULL), created_at, updated_at
-SourceText: id, owner_id -> User, deck_id -> Deck, raw_text, created_at 
+Текущая модель данных:
+- `User`: `id`, уникальный `username`, `created_at`.
+- `Deck`: `id`, `owner_id`, `title`, `description`, `is_public`, `created_at`.
+- `DeckTag`: `deck_id`, `value`.
+- `Card`: `id`, `deck_id`, `front`, `back`, `created_at`.
 
-API эндпоитны:
-Auth: POST /auth/register, POST /auth/login, GET /users/me
-Decks: POST/GET /decks, GET/PATCH/DELETE /decks/{id}, PATCH /decks/{id}/visibility
-Cards: POST/GET /decks/{id}/cards, PATCH/DELETE /cards/{id}
-Generation: POST /decks/{id}/generate
-Public: GET /public/decks, GET /public/decks/{id}
-Export: GET /decks/{id}/export/anki 
+Реализованные API-эндпоинты:
+- `POST /decks` — создать колоду (`title`, `description`, `is_public`, `tags`).
+- `GET /decks`, `GET /decks/{id}`, `PATCH /decks/{id}`, `DELETE /decks/{id}` — список, чтение, изменение и удаление своих колод.
+- `GET/POST /decks/{id}/cards` — список карточек (поддерживает `search`, `skip`, `limit`) и ручное добавление.
+- `PATCH/DELETE /cards/{id}` — изменение и удаление своей карточки.
+- `POST /decks/{id}/generate` — генерация карточек из текста (`text`, необязательные `language` и `model`; пустой `model` использует модель из настроек backend).
+- `POST /decks/{id}/generate-from-file` — извлечение текста и генерация из PDF, DOCX, MD или TXT (до 10 МБ).
+- `GET /public/decks` — список публичных колод с фильтрами `search` и `tag`.
+- `GET /public/decks/{id}`, `POST /public/decks/{id}/fork` — просмотр и копирование публичной колоды.
+- `GET /decks/{id}/export/anki` — экспорт заметок в формате AnkiConnect.
+
+Защищённые маршруты пока используют демонстрационного пользователя `demo`. Регистрация, парольный вход, управление профилем и завершение сессии в backend ещё не реализованы. AnkiConnect вызывается браузером напрямую на локальном компьютере пользователя.
 

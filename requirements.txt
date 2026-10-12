@@ -5,3 +5,7 @@ psycopg[binary]
 pydantic
 pydantic-settings
 httpx
+python-multipart
+pypdf
+python-docx
+ollama

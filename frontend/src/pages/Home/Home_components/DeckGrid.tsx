@@ -4,12 +4,13 @@ import DeckCard from './DeckCard';
 
 interface DeckGridProps {
   decks: Deck[];
+  onOpen: (deck: Deck) => void;
 }
 
-const DeckGrid: React.FC<DeckGridProps> = ({ decks }) => (
+const DeckGrid: React.FC<DeckGridProps> = ({ decks, onOpen }) => (
   <div className="grid">
     {decks.map((deck) => (
-      <DeckCard key={deck.id} deck={deck} />
+      <DeckCard key={deck.id} deck={deck} onOpen={onOpen} />
     ))}
   </div>
 );
