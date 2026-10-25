@@ -1,0 +1,212 @@
+.home-page {
+  width: 100%;
+  padding: 32px clamp(16px, 4vw, 48px) 56px;
+  box-sizing: border-box;
+  text-align: left;
+}
+
+.home-heading {
+  margin: 8px 0 28px;
+}
+
+.home-heading h1,
+.deck-detail-heading h1 {
+  margin: 0 0 8px;
+  font-size: clamp(30px, 4vw, 42px);
+  letter-spacing: -0.8px;
+}
+
+.grid {
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.grid .card {
+  display: flex;
+  flex-direction: column;
+  min-height: 190px;
+  background: var(--bg);
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+.deck-description {
+  min-height: 42px;
+  margin-bottom: 12px;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.deck-detail {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.detail-toolbar,
+.deck-detail-heading,
+.cards-heading,
+.file-import-content,
+.flashcard-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.detail-toolbar {
+  margin: 0 0 30px;
+}
+
+.deck-detail-heading {
+  align-items: flex-end;
+  margin-bottom: 28px;
+}
+
+.visibility-label {
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.file-import-panel {
+  margin-bottom: 32px;
+  border-color: var(--border) !important;
+  border-radius: 14px !important;
+  background: var(--accent-bg) !important;
+}
+
+.file-import-content {
+  flex-wrap: wrap;
+}
+
+.cards-heading {
+  margin: 0 0 16px;
+}
+
+.flashcard-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flashcard-list > .MuiCard-root {
+  border-color: var(--border);
+  border-radius: 12px;
+  text-align: left;
+}
+
+.flashcard-content {
+  align-items: flex-start;
+}
+
+.flashcard-number {
+  color: var(--accent);
+  font-weight: 700;
+  padding-top: 2px;
+}
+
+.flashcard-copy {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.flashcard-actions {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.dialog-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding-top: 12px !important;
+}
+
+@media (max-width: 640px) {
+  .home-page {
+    padding: 22px 16px 40px;
+  }
+
+  .detail-toolbar,
+  .deck-detail-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .detail-toolbar > div {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .flashcard-content {
+    gap: 10px;
+  }
+
+  .flashcard-actions {
+    flex-direction: column;
+  }
+}
+
+.appear > .card {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.state-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 48px 16px;
+}
+
+.empty-state {
+  padding: 42px 20px;
+  border: 1px dashed var(--border);
+  border-radius: 14px;
+  text-align: center;
+}
+
+.empty-state h6 {
+  margin-bottom: 6px;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes appear-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-transition {
+  animation: appear-up 0.25s ease-out;
+}
+
+.appear {
+  animation: appear-up 0.3s ease-out both;
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-transition,
+  .appear,
+  .fade-in {
+    animation: none;
+  }
+}

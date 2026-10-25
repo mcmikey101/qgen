@@ -1,0 +1,29 @@
+.navbar {
+  background-color: #1976d2;
+  color: white;
+}
+
+.navbar-title {
+  flex-grow: 0.5;
+  font-weight: bold;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 16px;
+}
+
+.navbar-link {
+  color: white;
+  text-decoration: none;
+  font-size: 16px;
+}
+
+.navbar-link:hover {
+  text-decoration: underline;
+}
+.navbar-link.active {
+  text-decoration: underline;
+  text-underline-offset: 6px;
+  font-weight: 600;
+}
