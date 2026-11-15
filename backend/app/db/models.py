@@ -11,9 +11,22 @@ class User(Base):
 
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False, default="")
     created_at = Column(DateTime, default=datetime.utcnow)
 
     decks = relationship("Deck", back_populates="owner", cascade="all, delete-orphan")
+    refresh_sessions = relationship("RefreshSession", back_populates="user", cascade="all, delete-orphan")
+
+
+class RefreshSession(Base):
+    __tablename__ = "refresh_sessions"
+
+    id = Column(Integer, primary_key=True)
+    token_jti = Column(String(36), unique=True, nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    expires_at = Column(DateTime, nullable=False)
+    revoked = Column(Boolean, default=False, nullable=False)
+    user = relationship("User", back_populates="refresh_sessions")
 
 
 class Deck(Base):

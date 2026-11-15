@@ -7,7 +7,7 @@ from ollama import AsyncClient
 
 from app.config.config import settings
 from app.db.database import Base, engine
-from app.routers import cards, decks, export, public
+from app.routers import auth, cards, decks, export, public
 
 MODEL = settings.llm_model
 
@@ -47,6 +47,7 @@ app.add_middleware(
 )
 
 app.include_router(decks.router)
+app.include_router(auth.router)
 app.include_router(cards.router)
 app.include_router(public.router)
 app.include_router(export.router)

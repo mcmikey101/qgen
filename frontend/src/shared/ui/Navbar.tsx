@@ -2,6 +2,7 @@ import React from 'react';
 import './Navbar.css';
 import { AppBar, Toolbar, Typography, Box } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import { useAuth } from '../../app/App';
 
 const links = [
   { to: '/', label: 'Главная' },
@@ -11,6 +12,7 @@ const links = [
 ];
 
 const Navbar: React.FC = () => {
+  const { user, logout } = useAuth();
   return (
     <AppBar position="static" className="navbar">
       <Toolbar>
@@ -21,6 +23,7 @@ const Navbar: React.FC = () => {
               {link.label}
             </NavLink>
           ))}
+          {user ? <button className="navbar-link" onClick={() => void logout()}>Выйти ({user.username})</button> : <NavLink className="navbar-link" to="/auth">Войти</NavLink>}
         </Box>
       </Toolbar>
     </AppBar>

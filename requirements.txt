@@ -6,6 +6,8 @@ pydantic
 pydantic-settings
 httpx
 python-multipart
+PyJWT
+pwdlib[argon2]
 pypdf
 python-docx
 ollama

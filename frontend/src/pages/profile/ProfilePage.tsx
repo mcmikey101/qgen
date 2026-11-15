@@ -19,8 +19,10 @@ import type { User } from '../../entities/user/model/types';
 import { email, hasErrors, maxLength, required, validate } from '../../shared/lib/validation';
 import { useAsync } from '../../shared/lib/useAsync';
 import { ErrorState, LoadingState } from '../../shared/ui/StateViews';
+import { useAuth } from '../../app/App';
 
 const ProfileView: React.FC<{ initialUser: User }> = ({ initialUser }) => {
+  const auth = useAuth();
   const [user, setUser] = useState(initialUser);
 
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -59,6 +61,7 @@ const ProfileView: React.FC<{ initialUser: User }> = ({ initialUser }) => {
 
   const handleLogout = () => {
     setIsLogoutOpen(false);
+    void auth.logout();
   };
 
   const handleDeleteAccount = () => {

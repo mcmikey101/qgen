@@ -1,11 +1,10 @@
-import { demoRequest } from '../../../shared/api/demoRequest';
 import type { User } from '../model/types';
 
-const demoUser: User = {
-  name: 'Иван Иванов',
-  email: 'ivan.ivanov@example.com',
-  joinedAt: '12 марта 2024',
-  decksCount: 8,
-};
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
 
-export const fetchCurrentUser = () => demoRequest(demoUser);
+export async function fetchCurrentUser(): Promise<User> {
+  const response = await fetch(`${API}/auth/me`, { headers: { Authorization: `Bearer ${localStorage.getItem('access_token') ?? ''}` } });
+  if (!response.ok) throw new Error('Не удалось загрузить профиль');
+  const user = await response.json();
+  return { name: user.username, email: '', joinedAt: new Date(user.created_at).toLocaleDateString(), decksCount: 0 };
+}

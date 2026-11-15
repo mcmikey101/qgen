@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     database_url: str
     llm_model: str = DEFAULT_LLM_MODEL
     cors_origins: str = "http://localhost:5173"
+    jwt_secret: str = "change-this-development-secret"
+    access_token_minutes: int = 15
+    refresh_token_days: int = 7
     model_config = {"env_file": ".env"}
 
     @field_validator("llm_model", mode="before")
