@@ -32,7 +32,7 @@ const AuthPage: React.FC = () => {
       setUser(await profile.json());
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Ошибка сервера'); }
   };
-  return <Box component="form" onSubmit={submit} sx={{ maxWidth: 400, mx: 'auto', mt: 8, p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}><Typography variant="h4">{register ? 'Регистрация' : 'Вход'}</Typography><TextField label="Имя пользователя" value={username} onChange={e => setUsername(e.target.value)} required /><TextField label="Пароль" type="password" value={password} onChange={e => setPassword(e.target.value)} required inputProps={{ minLength: 8 }} />{error && <Typography color="error">{error}</Typography>}<Button type="submit" variant="contained">{register ? 'Создать аккаунт' : 'Войти'}</Button><Button onClick={() => setRegister(!register)}>{register ? 'Уже есть аккаунт? Войти' : 'Зарегистрироваться'}</Button></Box>;
+  return <Box component="form" onSubmit={submit} sx={{ maxWidth: 400, mx: 'auto', mt: 8, p: 3, display: 'flex', flexDirection: 'column', gap: 2 }}><Typography variant="h4">{register ? 'Регистрация' : 'Вход'}</Typography><TextField label="Имя пользователя" value={username} onChange={e => setUsername(e.target.value)} required /><TextField label="Пароль" type="password" value={password} onChange={e => setPassword(e.target.value)} required slotProps={{ htmlInput: { minLength: 8 } }} />{error && <Typography color="error">{error}</Typography>}<Button type="submit" variant="contained">{register ? 'Создать аккаунт' : 'Войти'}</Button><Button onClick={() => setRegister(!register)}>{register ? 'Уже есть аккаунт? Войти' : 'Зарегистрироваться'}</Button></Box>;
 };
 
 const AnimatedRoutes: React.FC = () => {
