@@ -21,6 +21,8 @@ import { useAsync } from '../../shared/lib/useAsync';
 import { ErrorState, LoadingState } from '../../shared/ui/StateViews';
 import { useAuth } from '../../app/App';
 
+const API = import.meta.env.VITE_API_URL ?? 'http://localhost:8000';
+
 const ProfileView: React.FC<{ initialUser: User }> = ({ initialUser }) => {
   const auth = useAuth();
   const [user, setUser] = useState(initialUser);
@@ -31,6 +33,7 @@ const ProfileView: React.FC<{ initialUser: User }> = ({ initialUser }) => {
 
   const [isLogoutOpen, setIsLogoutOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   const [submitted, setSubmitted] = useState(false);
   const errors = {
@@ -64,8 +67,21 @@ const ProfileView: React.FC<{ initialUser: User }> = ({ initialUser }) => {
     void auth.logout();
   };
 
-  const handleDeleteAccount = () => {
-    setIsDeleteOpen(false);
+  const handleDeleteAccount = async () => {
+    setDeleteError('');
+    try {
+      const response = await fetch(`${API}/auth/me`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token') ?? ''}` },
+      });
+      if (!response.ok) throw new Error('Не удалось удалить профиль');
+      setIsDeleteOpen(false);
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      auth.setUser(null);
+    } catch (cause) {
+      setDeleteError(cause instanceof Error ? cause.message : 'Ошибка сервера');
+    }
   };
 
   return (
@@ -153,6 +169,7 @@ const ProfileView: React.FC<{ initialUser: User }> = ({ initialUser }) => {
           <DialogContentText>
             Вы уверены, что хотите выйти из профиля?
           </DialogContentText>
+          {deleteError && <Typography color="error" sx={{ mt: 2 }}>{deleteError}</Typography>}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setIsLogoutOpen(false)}>Отмена</Button>

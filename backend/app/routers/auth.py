@@ -3,7 +3,6 @@ from uuid import uuid4
 
 import jwt
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordRequestForm
 from pwdlib import PasswordHash
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
@@ -104,3 +103,9 @@ def logout(data: RefreshRequest, db: Session = Depends(get_db), user: User = Dep
 @router.get("/me", response_model=UserOut)
 def me(user: User = Depends(get_current_user)):
     return user
+
+
+@router.delete("/me", status_code=204)
+def delete_account(db: Session = Depends(get_db), user: User = Depends(get_current_user)):
+    db.delete(user)
+    db.commit()
